@@ -1,0 +1,77 @@
+{
+  "timeZone": "America/New_York",
+  "dependencies": {
+  },
+  "webapp": {
+    "access": "MYSELF",
+    "executeAs": "USER_DEPLOYING"
+  },
+  "exceptionLogging": "STACKDRIVER",
+  "oauthScopes": ["https://www.googleapis.com/auth/script.container.ui", "https://www.googleapis.com/auth/script.scriptapp", "https://www.googleapis.com/auth/spreadsheets"],
+  "runtimeVersion": "V8",
+  "sheets": {
+    "macros": [{
+      "menuName": "Resize View",
+      "functionName": "DeploymentSize",
+      "defaultShortcut": "Ctrl+Alt+Shift+1"
+    }, {
+      "menuName": "Set Value",
+      "functionName": "SetValue",
+      "defaultShortcut": "Ctrl+Alt+Shift+2"
+    }, {
+      "menuName": "Switch",
+      "functionName": "Switch",
+      "defaultShortcut": "Ctrl+Alt+Shift+2"
+    }, {
+      "menuName": "Filter",
+      "functionName": "Filter"
+    }, {
+      "menuName": "Turn Off Filter",
+      "functionName": "TurnOffFilter"
+    }, {
+      "menuName": "showAlert",
+      "functionName": "showAlert"
+    }, {
+      "menuName": "SetValueTest",
+      "functionName": "SetValueTest"
+    }, {
+      "menuName": "SetValueRelative",
+      "functionName": "SetValueRelative"
+    }, {
+      "menuName": "SwapValue",
+      "functionName": "SwapValue",
+      "defaultShortcut": "Ctrl+Alt+Shift+2"
+    }, {
+      "menuName": "SwapValue2",
+      "functionName": "SwapValue2",
+      "defaultShortcut": "Ctrl+Alt+Shift+3"
+    }, {
+      "menuName": "UpdateSheetNames",
+      "functionName": "UpdateSheetNames"
+    }, {
+      "menuName": "sortByStart",
+      "functionName": "sortByStart"
+    }, {
+      "menuName": "welcome",
+      "functionName": "welcome"
+    }, {
+      "menuName": "toggleDeploymentArea",
+      "functionName": "toggleDeploymentArea"
+    }, {
+      "menuName": "showSidebar",
+      "functionName": "showSidebar"
+    }, {
+      "menuName": "borderGantt",
+      "functionName": "borderGantt"
+    }, {
+      "menuName": "Select Text",
+      "functionName": "SelectText"
+    }, {
+      "menuName": "Filter",
+      "functionName": "Filter"
+    }, {
+      "menuName": "FilterSelectAll",
+      "functionName": "FilterSelectAll"
+    }]
+  }
+}

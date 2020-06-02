@@ -1,0 +1,247 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>NewSidebar</title>
+  <link type="text/css" rel="stylesheet" href=".materializeCSSFile.css" media="screen,projection" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <?!= include('Sidebar/materializeCSS'); ?>
+</head>
+<style>
+  .col {
+    width: 300px;
+  }
+
+  i.small {
+    font-size: 24px;
+    line-height: 48px;
+  }
+</style>
+<main style="width: 300px">
+  <div class="row">
+    <div class="col">
+      <ul class="tabs grey">
+        <li class="tab col s4 tooltipped" data-position="bottom" data-tooltip="Deployment Tools" id="sidebarTab"><a
+            href="#deploymentToolsTab"><i class="small material-icons blueculvers-text">event</i></a></li>
+        <li class="tab col s4 tooltipped" data-position="bottom" data-tooltip="Schedule Settings" id="sidebarTab">
+          <a href="#scheduleSettingsTab"><i class="small material-icons blueculvers-text">date_range</i></a></li>
+        <li class="tab col s4 tooltipped" data-position="bottom" data-tooltip="Other Tools" id="sidebarTab"><a
+            href="#otherToolsTab"><i class="small material-icons blueculvers-text">widgets</i></a></li>
+      </ul>
+    </div>
+    <div id="deploymentToolsTab" class="col s12">
+      <h5>
+        Deployment Tools
+      </h5>
+      <ul class="collection">
+        <li class="collection-item">
+          <div class="collection-div">
+            <label for="">Shift Quick Actions</label>
+            <div style="margin-top: 5px;">
+              <a class="btn-floating waves-effect waves-light blueculvers tooltipped" href="#"
+                onclick="google.script.run.SwapValue2()" data-tooltip="Swap Shifts"><i class="small material-icons"
+                  style="line-height: inherit;" id="filterButton">swap_vert</i></a>
+              <a class="btn-floating waves-effect waves-light blueculvers tooltipped" href="#"
+                onclick="google.script.run.separateShift()" data-tooltip="Split Shift"><i class="small material-icons"
+                  style="line-height: inherit;">call_split</i></a>
+              <a class="btn-floating waves-effect waves-light blueculvers tooltipped" href="#"
+                onclick="google.script.run.combineShiftsDialog()" data-tooltip="Combine Shifts"><i
+                  class="small material-icons" style="line-height: inherit;">call_merge</i></a>
+            </div>
+          </div>
+        </li>
+        <li class="collection-item">
+          <div class="collection-div">
+            <table class="highlight" id="employeeShiftsTable">
+              <thead>
+                <tr>
+                  <th style="padding: 5px 5px; font-weight: normal; width: 145px;">
+                    <label>Select an employee</label>
+                    <select class="browser-default" id="employeeSelect" onchange="selectedOption()"
+                      style="width: 135px">
+                      <option value="0" disabled selected style="display:none !important;">Select employee</option>
+                    </select>
+                  </th>
+                  <th>Shifts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Monday</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Tuesday</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Wednesday</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Thursday</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Friday</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Saturday</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Sunday</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><b>Hours</b></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div id="scheduleSettingsTab" class="col s12">
+      <h5>
+        Schedule Settings
+      </h5>
+      <ul class="collection">
+        <li class="collection-item">
+          <div class="collection-div">
+            <div class="switch">
+              <label>
+                Show formatted shift times
+                <input type="checkbox" id="shiftFormat">
+                <span class="lever"></span>
+              </label>
+            </div>
+          </div>
+        </li>
+        <li class="collection-item">
+          <div class="collection-div">
+            <label>Sort by date</label><br>
+            <select id="daysSelect" class="browser-default">
+              <option value="0" disabled selected style="display:none !important;">Select a date</option>
+              <option value="1">Monday</option>
+              <option value="2">Tuesday</option>
+              <option value="3">Wednesday</option>
+              <option value="4">Thursday</option>
+              <option value="5">Friday</option>
+              <option value="6">Saturday</option>
+              <option value="7">Sunday</option>
+            </select>
+          </div>
+        </li>
+        <li class="collection-item">
+          <div class="collection-div">
+            <label for="">Filter Schedule</label>
+            <div style="margin-top: 5px;">
+              <a class="btn-floating waves-effect waves-light blueculvers" href="#"
+                onclick="google.script.run.filterCrewChiefs()" title="Filter Crew Chiefs"><i
+                  class="small material-icons" style="line-height: inherit;" id="filterButton">person</i></a>
+              <a class="btn-floating waves-effect waves-light blueculvers" href="#"
+                onclick="google.script.run.filterManagers()" title="Filter Managers"><i class="small material-icons"
+                  style="line-height: inherit;">supervisor_account</i></a>
+              <a class="btn-floating waves-effect waves-light blueculvers right" href="#"
+                onclick="google.script.run.clearFilter()" title="Clear Filters"><i class="small material-icons"
+                  style="line-height: inherit;">clear_all</i></a>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div id="otherToolsTab" class="col s12">
+      <h5>Other Tools</h5>
+      <ul class="collection">
+        <li class="collection-item">
+          <div class="collection-div">
+            Schedule Comparer<br>
+            <label for="">Quick Actions</label>
+            <div style="margin-top: 5px;">
+              <a class="btn-floating waves-effect waves-light blueculvers tooltipped" href="#"
+                onclick="google.script.run.copySchedule()" data-tooltip="Copy Shifts" id="roundButtonFirst"><i
+                  class="small material-icons" style="line-height: inherit;">content_copy</i></a>
+              <a class="btn-floating waves-effect waves-light blueculvers tooltipped" href="#"
+                onclick="google.script.run.formatRedPrairie()" data-tooltip="Format RedPrairie" id="roundButton"><i
+                  class="small material-icons" style="line-height: inherit;">format_size</i></a>
+              <a class="btn-floating waves-effect waves-light blueculvers tooltipped" href="#"
+                onclick="google.script.run.compareSchedules()" data-tooltip="Compare Schedules" id="roundButton"><i
+                  class="small material-icons" style="line-height: inherit;">compare</i></a>
+              <a class="btn-floating waves-effect waves-light blueculvers tooltipped" href="#"
+                onclick="google.script.run.clearFormatting()" data-tooltip="Copy and Compare" id="roundButton"><i
+                  class="small material-icons" style="line-height: inherit;">developer_board</i></a>
+              <a class="btn-floating waves-effect waves-light blueculvers tooltipped" href="#"
+                onclick="google.script.run.copyAndCompare()" data-tooltip="Clear Formatting" id="roundButton"><i
+                  class="small material-icons" style="line-height: inherit;">people</i></a>
+            </div>
+          </div>
+        </li>
+        <li class="collection-item">
+          <div class="collection-div">
+            Cache Functions<br>
+            <label for="">Quick Actions</label>
+            <div style="margin-top: 5px;">
+              <a class="btn-floating waves-effect waves-light blueculvers tooltipped" href="#"
+                onclick="google.script.run.cacheShifts()" data-tooltip="Cache Shifts"><i class="small material-icons"
+                  style="line-height: inherit;">access_time</i></a>
+              <a class="btn-floating waves-effect waves-light blueculvers tooltipped" href="#"
+                onclick="google.script.run.cacheEmployeeSchedules()" data-tooltip="Cache Employee Schedules"
+                id="roundButton"><i class="small material-icons" style="line-height: inherit;">person</i></a>
+              <a class="btn-floating waves-effect waves-light blueculvers tooltipped" href="#"
+                onclick="google.script.run.cacheSchedule()" data-tooltip="Cache Schedule" id="roundButton"><i
+                  class="small material-icons" style="line-height: inherit;">date_range</i></a>
+              <a class="btn-floating waves-effect waves-light blueculvers tooltipped" href="#"
+                onclick="google.script.run.cacheEmployeeData()" data-tooltip="Cache Employee Data" id="roundButton"><i
+                  class="small material-icons" style="line-height: inherit;">portrait</i></a>
+              <a class="btn-floating waves-effect waves-light blueculvers tooltipped" href="#"
+                onclick="google.script.run.clearCache()" data-tooltip="Clear Cache" id="roundButton"><i
+                  class="small material-icons" style="line-height: inherit;">cloud_off</i></a><br>
+            </div>
+            <div style="margin-top: 5px;">
+              <a class="btn-floating waves-effect waves-light blueculvers tooltipped" href="#"
+                onclick="google.script.run.buildScheduleFromCache()" data-tooltip="Build Schedule From Cache"><i
+                  class="small material-icons" style="line-height: inherit;">build</i></a>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</main>
+<footer class="page-footer grey black-text" style="width:300px">
+  <div class="container">
+    <div class="row">
+      <div class="col s7">
+        <a class="waves-effect waves-light btn" href="#" onclick="buildSchedule()">Build Schedule</a>
+      </div>
+      <div class="col s5">
+        <div class="switch">
+          <label>
+            <span style="color: black">Auto change tabs</span>
+            <input type="checkbox" id="tabChanger">
+            <span class="lever"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<script type="text/javascript" src=".materializeScriptFile.js"></script>
+<?!= include('Sidebar/materializeScript'); ?>
+<?!= include('Sidebar/SidebarScript'); ?>
+<script>
+  $(document).ready(function () {
+    $('.tabs').tabs();
+    $('.tooltipped').tooltip({ outDuration: 250, exitDelay: 0, enterDelay: 50 });
+    $('select').formSelect();
+    $('.fixed-action-btn').floatingActionButton({ direction: "right" });
+  }); 
+</script>
+
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+  <link rel="stylesheet"
+    href="https://cdn.rawgit.com/mogsdad/e13b618322ec87ca8d28/raw/f1f96f797dadf968276c63de4df0bb04fb80646f/googly-jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+    $(function () {
+      $("#tabs").tabs();
+    });
+  </script>
+</head>
+
+<body>
+  <style>
+    div {
+      padding-top: .2em;
+    }
+
+    #filterButton {
+      width: 111.53px;
+      margin-bottom: 1em;
+    }
+
+    .ui-tabs .ui-tabs-nav {
+      text-align: center;
+    }
+
+    .ui-tabs .ui-tabs-nav li {
+      float: none !important;
+      display: inline-block;
+      height: 49px;
+      vertical-align: center;      
+    }
+
+    .ui-tabs .ui-tabs-nav li a {
+      white-space: normal;
+    }
+
+    .footer {
+      position: fixed;
+      left: 5px;
+      bottom: 10px;
+      width: 100%;
+    }
+    .ui-widget-content {
+      padding: 5px 2.4px 0 2.4px;
+    }
+
+    td {
+      padding: 0 0 12px 0
+    }
+
+    #comparerButton {
+      margin-bottom: 1em;
+    }
+  </style>
+  <div>
+    <div id="tabs">
+      <ul>
+        <li><a href="#tabs-1">Schedule<br>Functions</a></li>
+        <li><a href="#tabs-2">Deployment<br>Functions</a></li>
+        <li><a href="#tabs-3">Schedule<br>Comparer</a></li>
+      </ul>
+      <div id="tabs-1">
+        <table style="width:100%">
+          <td>
+            <b>Change View</b><br>
+            <form>
+              <select id="viewSelect" onchange="changeView()">
+                <option>Deployment View</option>
+                <option>Schedule View</option>
+              </select>
+            </form>
+          </td>
+          <td>
+            <b>Sort By Start Time</b><br>
+            <form>
+              <select id="daysSelect" onchange="sortDay()">
+                <option value="" disabled selected style="display:none;">Select Date</option>
+                <option>Monday</option>
+                <option>Tuesday</option>
+                <option>Wednesday</option>
+                <option>Thursday</option>
+                <option>Friday</option>
+                <option>Saturday</option>
+                <option>Sunday</option>
+              </select>
+            </form>
+          </td>
+        </table>
+        <button onclick="google.script.run.filterCrewChiefs()" id="filterButton">Filter Crew Chiefs</button><br>
+        <button onclick="google.script.run.filterManagers()" id="filterButton">Filter Managers</button><br>
+        <button onclick="google.script.run.clearFilter()" id="filterButton" style="vertical-align: bottom;">Clear Filter</button>
+      </div>
+      <div id="tabs-2">
+        <b>Edit Shifts</b><br>
+        <button onclick="google.script.run.SwapValue2()">Swap Shifts</button>
+        <button onclick="google.script.run.separateShift()">Split Shift</button>
+        <button onclick="google.script.run.combineShiftsDialog()">Combine Shifts</button><br><br>
+        <b>Get Employee Data</b>
+        <br>
+        <table id="myTable">
+          <tr>
+            <th style="width:80px"><b>Dates</b></th>
+            <th><b><select id="employeeSelect" onchange="selectedOption()" style="vertical-align: bottom;">
+                </select></b></th>
+          </tr>
+          <tr>
+            <td>Monday</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Tuesday</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Wednesday</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Thursday</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Friday</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Saturday</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Sunday</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><b>Hours</b></td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+      <div id="tabs-3">
+        <button onclick="google.script.run.copySchedule()" id="comparerButton">Copy Schedule</button><br>
+        <button onclick="google.script.run.formatRedPrairie()" id="comparerButton">Format Redprairie</button><br>
+        <button onclick="google.script.run.compareSchedules()" id="comparerButton">Compare Schedules</button><br>
+        <button onclick="google.script.run.clearFormatting()" id="comparerButton">Clear Formatting</button><br>
+        <button onclick="google.script.run.copyAndCompare()" id="comparerButton">Copy and Compare</button>
+      </div>
+    </div>
+    <br>
+    <div class=footer>
+      <button onclick="buildSchedule()" class="action" style="margin-right:8px">Build Schedule</button>
+      <input type=checkbox onclick="tabButton()" id="changeTabCheck">Auto Change Tabs
+    </div>
+  </div>
+  <?!= include('SidebarScript'); ?>
+</body>
+</html>

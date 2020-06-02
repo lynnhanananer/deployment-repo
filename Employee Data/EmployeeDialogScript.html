@@ -1,0 +1,502 @@
+<script>
+  loadSelect();
+  function loadSelect()
+  {
+    google.script.run.withSuccessHandler(loadNames).getNames();
+  }
+
+  function loadNames(names)
+  {
+    var sel = document.getElementById('employeeSelect');
+    var i = 0;
+    var opt
+
+    sel = document.getElementById("employeeSelect");
+    opt = document.createElement("option");
+    opt.selected = "true";
+    opt.disabled = "true";
+    opt.text = "Select Employee";
+    opt.value = "Select Employee";
+    opt.style = "display:none";
+    sel.options.add(opt);  
+    for(i = 0; i < names.length; i++)
+    {
+      sel = document.getElementById("employeeSelect");
+      if (names[i]) 
+      { //check if there actually is a value
+        opt = document.createElement("option");
+        sel.options.add(opt);
+        opt.text = names[i]; //0 is first column
+        opt.value = names[i]; 
+        sel.options.add(opt);
+      }
+    }
+  }
+
+  function createNewEmployee()
+  {
+    var obj = document.getElementById("employeeSelect");
+    var selectedText = obj.options[obj.selectedIndex].text;
+    if(selectedText == "New Employee")
+    {
+      if(confirm("It seems you are already creating a new employee,\nare you sure you want to clear the form?"))
+      {
+        enableAll();
+        clearAll();
+        checkAll();
+        sel = document.getElementById("employeeSelect");
+        opt = document.createElement("option");
+        opt.text = "New Employee";
+        opt.value = "New Employee";
+        opt.selected = true;
+        opt.disabled = "true";
+        opt.style = "display:none";
+        sel.options.add(opt);
+      }
+    }
+    else
+    {
+      enableAll();
+      clearAll();
+      checkAll();
+      sel = document.getElementById("employeeSelect");
+      opt = document.createElement("option");
+      opt.text = "New Employee";
+      opt.value = "New Employee";
+      opt.selected = true;
+      opt.disabled = "true";
+      opt.style = "display:none";
+      sel.options.add(opt);
+    }
+  }
+
+  function enableAll()
+  {
+    var inputs = document.getElementsByTagName("input");
+    var i;
+    for(i = 0; i <inputs.length; i++)
+    {
+      inputs[i].disabled = false;
+    }
+    var houseSelect = document.getElementById("houseSelect");
+    houseSelect.disabled = false;
+  }
+
+  function checkAll()
+  {
+    var dates = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    var i = 0;
+    for(i = 0; i < dates.length; i++)
+    {
+      document.getElementById(dates[i] + "Box").checked = true;
+    }
+  }
+
+  function clearAll()
+  {
+    var inputs = document.getElementsByTagName("input");
+    var i;
+    for(i = 0; i < inputs.length; i++)
+    {
+      inputs[i].value = null;
+    }
+  }
+
+  function disableAll()
+  {
+    var inputs = document.getElementsByTagName("input");
+    var i;
+    for(i = 0; i < inputs.length; i++)
+    {
+      inputs[i].disabled = true;
+    }
+    houseSelect.disabled = true;
+  }
+
+  function cancel()
+  {  
+    employeeSelect = document.getElementById("employeeSelect");
+    employeeOpt = document.createElement("option");
+    employeeOpt.selected = true;
+    employeeOpt.disabled = true;
+    employeeOpt.text = "Select Employee";
+    employeeOpt.value = "Select Employee";
+    employeeOpt.style = "display:none";
+    employeeSelect.options.add(employeeOpt);
+
+    houseSelect = document.getElementById("houseSelect");
+    houseOpt = document.createElement("option");
+    houseOpt.selected = true;
+    houseOpt.disabled = true;
+    houseOpt.text = "Select a house";
+    houseOpt.value = "Select a house";
+    houseOpt.style = "display:none";
+    houseSelect.options.add(houseOpt);
+
+    clearAll();
+    disableAll();
+    checkAll();
+  }
+
+  function selectedOption() 
+  {
+    var obj = document.getElementById("employeeSelect");
+    var selectedText = obj.options[obj.selectedIndex].text;
+    google.script.run.withSuccessHandler(fillInputs).getEmployeeData(selectedText);
+  }
+
+  function fillInputs(employeeData) //updated for house
+  {
+    var dates = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    var positions = ["runner", "register", "drivethru", "set", "custard", "fryer", "buns", "grill", "middle"];
+    var houses = ["FOH","BOH","Both"];
+    var i;
+    var houseFound;
+    enableAll();
+    checkAll();
+    document.getElementById("deploymentName").value = employeeData[0];
+    document.getElementById("scheduleName").value = employeeData[1];
+    document.getElementById("birthday").value = (employeeData[2].substring(6, 10) + "-" + employeeData[2].substring(0, 2) + "-" + employeeData[2].substring(3, 5));
+    document.getElementById("hireDate").value = (employeeData[4].substring(6, 10) + "-" + employeeData[4].substring(0, 2) + "-" + employeeData[4].substring(3, 5));
+    document.getElementById("phoneNumber").value = employeeData[6];
+    for (i = 7; i < 14; i++) 
+    {
+      if (employeeData[i] != "") 
+      {
+        document.getElementById(dates[i - 7] + "Time").value = employeeData[i];
+      }
+      else 
+      {
+        document.getElementById(dates[i - 7] + "Box").checked = false;
+        document.getElementById(dates[i - 7] + "Time").disabled = true;
+        document.getElementById(dates[i - 7] + "Time").value = null;
+      }
+    }
+    document.getElementById("maxShifts").value = employeeData[14];
+    document.getElementById("maxHours").value = employeeData[15];
+    for (i = 16; i < employeeData.length-1; i++) 
+    {
+      document.getElementById(positions[i - 16] + "Rank").value = employeeData[i];
+    }
+    
+    houseFound = false;
+    for(i = 0; i < houses.length; i++)
+    {
+      if(employeeData[employeeData.length-1] == houses[i])
+      {
+        document.getElementById("houseSelect").selectedIndex = i;
+        houseFound = true;
+        break;
+      }      
+    }
+    if(!houseFound)
+    {
+      houseSelect = document.getElementById("houseSelect");
+      houseOpt = document.createElement("option");
+      houseOpt.selected = true;
+      houseOpt.disabled = true;
+      houseOpt.text = "Select a house";
+      houseOpt.value = "Select a house";
+      houseOpt.style = "display:none";
+      houseSelect.options.add(houseOpt);
+    }
+  }
+
+  function updateCheckboxes()
+  {
+    var dates = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    var i;
+    for(i = 0; i < dates.length; i++)
+    {
+      if(document.getElementById(dates[i]+"Box").checked == false)
+      {
+        document.getElementById(dates[i] + "Time").disabled = true;
+        document.getElementById(dates[i] + "Time").value = null;
+      }
+      else
+      {
+        document.getElementById(dates[i] + "Time").disabled = false;
+      }
+    }
+  }
+
+  function save() //updated for house
+  {
+    var obj = document.getElementById("employeeSelect");
+    var selectedText = obj.options[obj.selectedIndex].text;
+    var employeeData = [];
+    var birthday, i;
+    var dates = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    var positions = ["runner", "register", "drivethru", "set", "custard", "fryer", "buns", "grill", "middle"];
+    if(selectedText == "Select Employee")
+    {
+      alert("No Employee Selected");
+    }
+    else if(selectedText == "New Employee")
+    {
+      employeeData.push(document.getElementById("deploymentName").value);
+      employeeData.push(document.getElementById("scheduleName").value);
+      birthday = document.getElementById("birthday").value;
+      employeeData.push(birthday.substring(5,7)+"/"+birthday.substring(8,10)+"/"+birthday.substring(0,4));
+      var hireDate = document.getElementById("hireDate").value;
+      employeeData.push(hireDate.substring(5,7)+"/"+hireDate.substring(8,10)+"/"+hireDate.substring(0,4));
+      var phoneNumber = document.getElementById("phoneNumber").value
+      employeeData.push(phoneNumber.replace(")","").replace("(","").replace("-","").replace(" ",""));      
+      
+      for(i = 0; i < dates.length; i++)
+      {
+        employeeData.push(document.getElementById(dates[i] + "Time").value);
+      }
+      employeeData.push(document.getElementById("maxShifts").value);
+      employeeData.push(document.getElementById("maxHours").value);
+
+      for(i = 0; i < positions.length; i++)
+      {
+        employeeData.push(document.getElementById(positions[i] + "Rank").value);
+      }
+
+      var houseSelect = document.getElementById("houseSelect");
+      var selectedHouse = houseSelect.options[houseSelect.selectedIndex].text;
+
+      if(selectedHouse == "Select a house")
+      {
+        employeeData.push("");
+      }
+      else
+      {
+        employeeData.push(selectedHouse);
+      }
+
+      google.script.run.withSuccessHandler(rebuildNamesHandler).addNewEmployee(employeeData);
+    }
+    else
+    {
+      employeeData.push(document.getElementById("deploymentName").value);
+      employeeData.push(document.getElementById("scheduleName").value);
+      birthday = document.getElementById("birthday").value;
+      employeeData.push(birthday.substring(5,7)+"/"+birthday.substring(8,10)+"/"+birthday.substring(0,4));
+      var hireDate = document.getElementById("hireDate").value;
+      employeeData.push(hireDate.substring(5,7)+"/"+hireDate.substring(8,10)+"/"+hireDate.substring(0,4));
+      var phoneNumber = document.getElementById("phoneNumber").value
+      employeeData.push(phoneNumber.replace(")","").replace("(","").replace("-","").replace(" ",""));
+
+      for(i = 0; i < dates.length; i++)
+      {
+        employeeData.push(document.getElementById(dates[i] + "Time").value);
+      }
+      employeeData.push(document.getElementById("maxShifts").value);
+      employeeData.push(document.getElementById("maxHours").value);
+
+      for(i = 0; i < positions.length; i++)
+      {
+        employeeData.push(document.getElementById(positions[i] + "Rank").value);
+      }
+
+      var houseSelect = document.getElementById("houseSelect");
+      var selectedHouse = houseSelect.options[houseSelect.selectedIndex].text;
+
+      if(selectedHouse == "Select a house")
+      {
+        employeeData.push("");
+      }
+      else
+      {
+        employeeData.push(selectedHouse);
+      }
+
+      employeeData.push(selectedText);
+      google.script.run.withSuccessHandler(rebuildNamesHandler).updateEmployeeData(employeeData);
+    }
+  }
+
+  function rebuildNamesHandler()
+  {
+    google.script.run.withSuccessHandler(rebuildNames).getNames();
+  }
+
+  function rebuildNames(names)
+  {
+    var sel = document.getElementById('employeeSelect');
+    var numberOptions = sel.options.length;
+    var selectedIndex = sel.selectedIndex;
+    var selectedText = document.getElementById("scheduleName").value;
+    var i = 0;
+    var opt;
+
+    for(i = 0; i < numberOptions; i++)
+    {
+      sel = document.getElementById("employeeSelect");
+      sel.options.remove(0);
+    }
+
+    for(i = 0; i < names.length; i++)
+    {
+      sel = document.getElementById("employeeSelect");
+      if (names[i]) 
+      { //check if there actually is a value
+        opt = document.createElement("option");
+        sel.options.add(opt);
+        opt.text = names[i]; //0 is first column
+        opt.value = names[i]; 
+        sel.options.add(opt);
+      }
+    }
+    sel = document.getElementById('employeeSelect');
+    for(i = 0; i < sel.length; i++)
+    {
+      if(sel.options[i].text == selectedText)
+      {
+        sel.options.selectedIndex = i;
+      }
+    }    
+  } 
+
+  function saveAndClose() //updated for house
+  {    
+    var obj = document.getElementById("employeeSelect");
+    var selectedText = obj.options[obj.selectedIndex].text;
+    var employeeData = [];
+    var birthday, i;
+    var dates = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    var positions = ["runner", "register", "drivethru", "set", "custard", "fryer", "buns", "grill", "middle"];
+    if(selectedText == "Select Employee")
+    {
+      alert("No Employee Selected");
+    }
+    else if(selectedText == "New Employee")
+    {
+      employeeData.push(document.getElementById("deploymentName").value);
+      employeeData.push(document.getElementById("scheduleName").value);
+      birthday = document.getElementById("birthday").value;
+      employeeData.push(birthday.substring(5,7)+"/"+birthday.substring(8,10)+"/"+birthday.substring(0,4));
+      var hireDate = document.getElementById("hireDate").value;
+      employeeData.push(hireDate.substring(5,7)+"/"+hireDate.substring(8,10)+"/"+hireDate.substring(0,4));
+      var phoneNumber = document.getElementById("phoneNumber").value
+      employeeData.push(phoneNumber.replace(")","").replace("(","").replace("-","").replace(" ",""));
+      for(i = 0; i < dates.length; i++)
+      {
+        employeeData.push(document.getElementById(dates[i] + "Time").value);
+      }
+      employeeData.push(document.getElementById("maxShifts").value);
+      employeeData.push(document.getElementById("maxHours").value);
+
+      for(i = 0; i < positions.length; i++)
+      {
+        employeeData.push(document.getElementById(positions[i] + "Rank").value);
+      }
+      
+      var houseSelect = document.getElementById("houseSelect");
+      var selectedHouse = houseSelect.options[houseSelect.selectedIndex].text;
+
+      if(selectedHouse == "Select a house")
+      {
+        employeeData.push("");
+      }
+      else
+      {
+        employeeData.push(selectedHouse);
+      }
+
+      google.script.run.addNewEmployee(employeeData);
+    }
+    else
+    {
+      employeeData.push(document.getElementById("deploymentName").value);
+      employeeData.push(document.getElementById("scheduleName").value);
+      birthday = document.getElementById("birthday").value;
+      employeeData.push(birthday.substring(5,7)+"/"+birthday.substring(8,10)+"/"+birthday.substring(0,4));
+      var hireDate = document.getElementById("hireDate").value;
+      employeeData.push(hireDate.substring(5,7)+"/"+hireDate.substring(8,10)+"/"+hireDate.substring(0,4));
+      var phoneNumber = document.getElementById("phoneNumber").value
+      employeeData.push(phoneNumber.replace(")","").replace("(","").replace("-","").replace(" ",""));
+      for(i = 0; i < dates.length; i++)
+      {
+        employeeData.push(document.getElementById(dates[i] + "Time").value);
+      }
+      employeeData.push(document.getElementById("maxShifts").value);
+      employeeData.push(document.getElementById("maxHours").value);
+
+      for(i = 0; i < positions.length; i++)
+      {
+        employeeData.push(document.getElementById(positions[i] + "Rank").value);
+      }
+
+      var houseSelect = document.getElementById("houseSelect");
+      var selectedHouse = houseSelect.options[houseSelect.selectedIndex].text;
+
+      if(selectedHouse == "Select a house")
+      {
+        employeeData.push("");
+      }
+      else
+      {
+        employeeData.push(selectedHouse);
+      }
+
+      employeeData.push(selectedText);
+      google.script.run.updateEmployeeData(employeeData);
+    }  
+    google.script.host.close();
+  }
+
+  function deleteEmployeeHandler()
+  {
+    var obj = document.getElementById("employeeSelect");
+    var selectedText = obj.options[obj.selectedIndex].text;
+    if(selectedText == "Select Employee")
+    {
+      alert("No Employee Selected");
+    }
+    else if(selectedText == "New Employee")
+    {
+      alert("You cant delete a new employee that isnt saved.\nUse the cancel button to clear the new employee.");
+    }
+    else
+    {
+      google.script.run.withSuccessHandler(clearAndRebuildHandler).deleteEmployee(selectedText);      
+    }
+  }
+
+  function clearAndRebuildHandler()
+  {
+    google.script.run.withSuccessHandler(clearAndRebuildNames).getNames();
+  }
+
+  function clearAndRebuildNames(names)
+  {
+    var sel = document.getElementById('employeeSelect');
+    var numberOptions = sel.length;
+    var i = 0;
+    var opt;
+
+    for(i = 0; i < numberOptions; i++)
+    {
+      sel = document.getElementById("employeeSelect");
+      sel.options.remove(0);
+    }
+
+    for(i = 0; i < names.length; i++)
+    {
+      sel = document.getElementById("employeeSelect");
+      if (names[i]) 
+      { //check if there actually is a value
+        opt = document.createElement("option");
+        sel.options.add(opt);
+        opt.text = names[i]; //0 is first column
+        opt.value = names[i]; 
+        sel.options.add(opt);
+      }
+    }
+    sel = document.getElementById('employeeSelect');
+    opt = document.createElement("option");
+    opt.selected = "true";
+    opt.disabled = "true";
+    opt.text = "Select Employee";
+    opt.value = "Select Employee";
+    opt.style = "display:none";
+    sel.options.add(opt);
+    clearAll();
+    disableAll();
+    checkAll();
+  }
+</script>

@@ -1,0 +1,210 @@
+<script>
+  loadSelect();
+  //this update the day that is sorted on the schedule
+  $("#daysSelect").on('change', function() {
+      sortDay();
+  });
+  
+  $('#shiftFormat').change(function() {
+    if (!$(this).is(':checked')) {
+      google.script.run.changeView("Deployment View");
+    }
+    else {
+      google.script.run.changeView("Schedule View");
+    }
+  });
+
+  $('#tabChanger').change(function() {
+    if ($(this).is(':checked')) {
+      tabButton();
+    }
+  });
+
+  function sortDay() 
+  {
+    obj = document.getElementById("daysSelect");
+    var daySelected = obj.options[obj.selectedIndex].text;
+    
+    google.script.run.sortByStart(daySelected);
+  }
+  
+  //this updates the view on the schedule
+  function changeView()
+  {
+    var obj = document.getElementById("viewSelect");
+    var viewSelected = obj.options[obj.selectedIndex].text;
+    
+    google.script.run.changeView(viewSelected);
+  }
+  
+  function loadSelect()
+  {
+    google.script.run.withSuccessHandler(loadNames).getScheduleNames();
+  }
+  
+  function loadNames(names)
+  {
+    var sel = document.getElementById('employeeSelect');
+    var i = 0;
+    var opt
+  
+    sel = document.getElementById("employeeSelect");
+    opt = document.createElement("option");
+    opt.selected = "true";
+    opt.disabled = "true";
+    opt.text = "Select Employee";
+    opt.value = "Select Employee";
+    opt.style = "display:none";
+    sel.options.add(opt);  
+    for(i = 0; i < names.length; i++)
+    {
+      sel = document.getElementById("employeeSelect");
+      if (names[i]) 
+      { //check if there actually is a value
+        opt = document.createElement("option");
+        sel.options.add(opt);
+        opt.text = names[i]; //0 is first column
+        opt.value = names[i]; 
+        sel.options.add(opt);
+      }
+    }
+  }
+  
+  //this gets the selected option and builds the table
+  function selectedOption()
+  {
+  var obj = document.getElementById("employeeSelect");
+  var selectedText = obj.options[obj.selectedIndex].text;
+  google.script.run.withSuccessHandler(updateTable).getEmployeeShifts(selectedText);
+  }
+  
+  function updateTable(data)
+  {
+    var x;
+    var i = 0;
+    var rows = document.getElementById("employeeShiftsTable").rows.length;
+    x = document.getElementById("employeeShiftsTable").rows[i].cells;
+    //x[1].innerHTML = "<b>" + data[0] + "</b>";
+    for(i = 1; i < rows; i++)
+    {
+    x = document.getElementById("employeeShiftsTable").rows[i].cells;
+    x[1].innerHTML = data[i];
+    }  
+  }
+  
+  //this happens when you click the build schedule button
+  function buildSchedule()
+  {
+  google.script.run.withSuccessHandler(rebuildNamesHandler).buildSchedule();
+  }
+  function rebuildNamesHandler()
+  {
+  google.script.run.withSuccessHandler(rebuildNames).getScheduleNames();
+  }
+  function rebuildNames(names)
+  {
+    var sel = document.getElementById('employeeSelect');
+    var numberOptions = sel.options.length;
+    var selectedIndex = sel.options.selectedIndex;
+    var selectedText = sel.options[selectedIndex].text;
+    var i = 0;
+    var opt;
+    var foundSelected = true;
+    var x;
+    var rows;
+  
+    for(i = 0; i < numberOptions; i++)
+    {
+      sel = document.getElementById("employeeSelect");
+      sel.options.remove(0);
+    }
+  
+    for(i = 0; i < names.length; i++)
+    {
+      sel = document.getElementById("employeeSelect");
+      if (names[i]) 
+      { //check if there actually is a value
+        opt = document.createElement("option");
+        sel.options.add(opt);
+        opt.text = names[i]; //0 is first column
+        opt.value = names[i]; 
+        sel.options.add(opt);
+      }
+    }
+    sel = document.getElementById('employeeSelect');
+    if(sel.options[selectedIndex].text === selectedText)
+    {
+      sel.options.selectedIndex = selectedIndex;
+    }
+    else
+    {
+      foundSelected = false;
+      for(i = 0; i < sel.length; i++)
+      {
+        if(sel.options[i].text === selectedText)
+        {
+          sel.options.selectedIndex = i;
+          foundSelected = true;
+        }
+      }
+    }
+    if(foundSelected)
+      selectedOption();
+    else
+    {
+      sel.options[selectedIndex].selected = false;
+      rows = document.getElementById("employeeShiftsTable").rows.length;
+      x = document.getElementById("employeeShiftsTable").rows[i].cells;
+      for(i = 1; i < rows; i++)
+      {
+        x = document.getElementById("employeeShiftsTable").rows[i].cells;
+        x[1].innerHTML = " ";
+      }
+      sel = document.getElementById("employeeSelect");
+      opt = document.createElement("option");
+      opt.selected = "true";
+      opt.disabled = "true";
+      opt.text = "Select Employee";
+      opt.value = "Select Employee";
+      opt.style = "display:none";
+      sel.options.add(opt); 
+    }
+  }
+  
+  //this handles the automatic tab changing
+  function tabButton()
+  {
+    google.script.run.withSuccessHandler(changeTab).getSheetCategory();
+  }
+  
+  function changeTab(sheet) {
+    if (checkBox = document.getElementById("tabChanger").checked == true) {
+      if (sheet == "Deployment") {
+        $(".tabs").tabs('select','deploymentToolsTab');
+      }
+      if (sheet == "Schedule") {
+        $(".tabs").tabs('select','scheduleSettingsTab');
+      }
+      if (sheet == "Schedule Comparer") {
+        $(".tabs").tabs('select','scheduleComparerTab');
+      }
+      poll();
+    }
+  }
+  
+  function poll(interval) {
+    var checkBox = document.getElementById("tabChanger");
+    if (checkBox.checked == true) {
+      interval = interval || 500;
+      setTimeout(function () {
+        google.script.run
+          .withSuccessHandler(changeTab).getSheetCategory();
+      }, interval);
+    }
+  }
+  
+  $("#sidebarTab").click(function() {
+    document.getElementById("tabChanger").checked = false;
+   })
+  </script>
+  

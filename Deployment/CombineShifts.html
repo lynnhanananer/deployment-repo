@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">  
+</head>
+<body>
+<div style="display:block;margin-bottom:1em">
+<select id="shiftCombinerSelect">
+  <option disabled selected value="selectOption" style="display:none">Select an option</option>
+  <option>Combine with " train "</option>
+  <option>Combine with "/"</option>
+</select>
+</div>
+<div style="position:fixed;right:0px;">
+  <button onclick="getSelectValue()">Ok</button>
+  <button onclick="google.script.host.close()">Cancel</button>  
+</div>
+</body>
+<script>
+    function getSelectValue()
+    {
+      var obj = document.getElementById("shiftCombinerSelect");
+      var selectedText = obj.options[obj.selectedIndex].text;
+      google.script.run.combineShifts(selectedText);
+      google.script.host.close();
+    }
+  </script>
+</html>

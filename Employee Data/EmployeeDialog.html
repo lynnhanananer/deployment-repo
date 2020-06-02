@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+</head>
+<style>
+    .column {
+        padding-right: 5px;
+        float: left;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    .header {
+        vertical-align: middle;
+        line-height: 29px;
+        padding-bottom: 5px;
+    }
+</style>
+
+<body>
+    <div class="header" style="width: 792px;">
+        <b>Get Employee Data </b><select id="employeeSelect" style="vertical-align: bottom;margin-left:1em"
+            onchange="selectedOption()"></select>
+        <button id="addNew" onclick="createNewEmployee()" style="margin-left: 12px">Create New Employee</button>
+        <button id="deleteEmployee" onclick="deleteEmployeeHandler()">Delete Employee</button>
+    </div>
+    <div id="mainContainer" style="width: 792px;">
+        <div class="row">
+            <div class="column" style="width: 293px;">
+                <b>Employee Information</b><br>
+                <div class="row" style="padding-bottom: 5px;">
+                    <div class="column" style="line-height: 25px">
+                        Deployment Name<br>
+                        Schedule Name<br>
+                        Birthday<br>
+                        Hire Date<br>
+                        Phone Number
+                    </div>
+                    <div class="column">
+                        <input type="text" id="deploymentName" placeholder="Deployment Name" style="width:175px"
+                            disabled><br>
+                        <input type="text" id="scheduleName" placeholder="Schedule Name" style="width:175px"
+                            disabled><br>
+                        <input type="date" id="birthday" style="width:175px" disabled><br>
+                        <input type="date" id="hireDate" style="width:175px" disabled><br>
+                        <input type="text" id="phoneNumber" placeholder="(###) ###-####" style="width:175px"
+                            pattern="[(][0-9]{3}[)] [0-9]{3}-[0-9]{4}" disabled title="Format is (###) ###-####">
+                    </div>
+                </div>
+                <b>Shifts and Hours Constraints</b>
+                <div class="row">
+                    <div class="column" style="line-height: 25px;">
+                        Max Shifts Per Week<br>
+                        Max Allowed Hours<br>
+                    </div>
+                    <div class="column">
+                        <input type="number" id="maxShifts" style="width:46px" disabled><br>
+                        <input type="number" id="maxHours" style="width:46px" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="column" style="width: 205px;">
+                <b>Availability</b><br>
+                <div class="row">
+                    <div class="column" style="line-height: 25px;">
+                        Monday<br>
+                        Tuesday<br>
+                        Wednesday<br>
+                        Thursday<br>
+                        Friday<br>
+                        Saturday<br>
+                        Sunday
+                    </div>
+                    <div class="column" style="line-height: 25px;">
+                        <input type="checkbox" id="MondayBox" checked disabled onchange="updateCheckboxes()"><br>
+                        <input type="checkbox" id="TuesdayBox" checked disabled onchange="updateCheckboxes()"><br>
+                        <input type="checkbox" id="WednesdayBox" checked disabled onchange="updateCheckboxes()"><br>
+                        <input type="checkbox" id="ThursdayBox" checked disabled onchange="updateCheckboxes()"><br>
+                        <input type="checkbox" id="FridayBox" checked disabled onchange="updateCheckboxes()"><br>
+                        <input type="checkbox" id="SaturdayBox" checked disabled onchange="updateCheckboxes()"><br>
+                        <input type="checkbox" id="SundayBox" checked disabled onchange="updateCheckboxes()">
+                    </div>
+                    <div class="column">
+                        <input type="text" id="MondayTime" placeholder="Not Available" style="width:100px" disabled><br>
+                        <input type="text" id="TuesdayTime" placeholder="Not Available" style="width:100px"
+                            disabled><br>
+                        <input type="text" id="WednesdayTime" placeholder="Not Available" style="width:100px"
+                            disabled><br>
+                        <input type="text" id="ThursdayTime" placeholder="Not Available" style="width:100px"
+                            disabled><br>
+                        <input type="text" id="FridayTime" placeholder="Not Available" style="width:100px" disabled><br>
+                        <input type="text" id="SaturdayTime" placeholder="Not Available" style="width:100px"
+                            disabled><br>
+                        <input type="text" id="SundayTime" placeholder="Not Available" style="width:100px" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="column" style="width: 279px;">
+                <b>Position Ranks</b>
+                <div class="row">
+                    <div class="column" style="line-height: 25px;">
+                        Runner Rank<br>
+                        Register Rank<br>
+                        Drive Thru Rank<br>
+                        Set Rank<br>
+                        Custard Rank
+                    </div>
+                    <div class="column">
+                        <input type="number" id="runnerRank" style="width:46px" disabled><br>
+                        <input type="number" id="registerRank" style="width:46px" disabled><br>
+                        <input type="number" id="drivethruRank" style="width:46px" disabled><br>
+                        <input type="number" id="setRank" style="width:46px" disabled><br>
+                        <input type="number" id="custardRank" style="width:46px" disabled>
+                    </div>
+                    <div class="column" style="line-height: 25px;">
+                        Fryer Rank<br>
+                        Buns Rank<br>
+                        Grill Rank<br>
+                        Middle Rank
+                    </div>
+                    <div class="column">
+                        <input type="number" id="fryerRank" style="width:46px" disabled><br>
+                        <input type="number" id="bunsRank" style="width:46px" disabled><br>
+                        <input type="number" id="grillRank" style="width:46px" disabled><br>
+                        <input type="number" id="middleRank" style="width:46px" disabled>
+                    </div>
+                </div>
+                <div style="padding-top:5px;">
+                    <b>House</b>
+                    <select disabled id="houseSelect" style="margin-left:1em">
+                        <option value="FOH" text="FOH">FOH</option>
+                        <option value="BOH" text="BOH">BOH</option>
+                        <option value="Both" text="Both">Both</option>
+                        <option disabled selected value="selectOption" style="display:none">Select a house</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div></div>
+    <div class="footer" style="position:fixed;bottom:0px;right:0px;width:792px;text-align: right;">
+        <button onclick="save()">Save</button>
+        <button onclick="saveAndClose()">Save and Close</button>
+        <button onclick="cancel()">Cancel</button>
+        <button class="action" onclick="google.script.host.close()">Close</button>
+    </div>
+    <!-- <div class="footer" style="position:fixed;bottom:0px;right:0px;">
+        <button onclick="google.script.host.close()">Close</button>
+    </div> -->
+</body>
+<?!= include('EmployeeDialogScript'); ?>
+
+</html>

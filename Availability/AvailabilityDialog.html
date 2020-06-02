@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+</head>
+
+<body>
+  <div style="margin-bottom:1em;">
+    Weekday
+    <select style="margin-left:1em" id="weekdaySelect">
+      <option>Monday</option>
+      <option>Tuesday</option>
+      <option>Wednesday</option>
+      <option>Thursday</option>
+      <option>Friday</option>
+      <option>Saturday</option>
+      <option>Sunday</option>
+      <option disabled selected value="selectOption" style="display:none">Select a weekday</option>
+    </select>
+  </div>
+  <div style="border-bottom-style:solid;border-bottom-color:rgb(128, 128, 128);border-bottom-width: 1px;margin-bottom:5px">
+    <b>Filters</b>
+  </div>
+  <div style="width:50%;display:inline-block;">
+    <div style="display:inline-block;width:125px;line-height: 21px;">
+      Exclude Deployed<br>
+      Exclude Managers<br>
+      Exclude Full Time<br>
+      Exclude Crew Chiefs<br>
+    </div>
+    <div style="display: inline-block;">
+      <input type="checkbox" id="excludeDeployed"><br>
+      <input checked type="checkbox" id="managers"><br>
+      <input checked type="checkbox" id="fullTime"><br>
+      <input checked type="checkbox" id="crewChiefs"><br>
+    </div>
+  </div>
+  <div style="width:50%;float:right;">
+    <div style="display:inline-block;width:125px;line-height: 21px;">
+      All Day<br>
+      AM<br>
+      PM<br>
+      CL<br>
+      AMPM<br>
+    </div>
+    <div style="display: inline-block;">
+      <input checked type="checkbox" id="allDay"><br>
+      <input checked type="checkbox" id="AM"><br>
+      <input checked type="checkbox" id="PM"><br>
+      <input checked type="checkbox" id="CL"><br>
+      <input checked type="checkbox" id="AMPM"><br>
+    </div>
+  </div>
+  <div style="margin-top:1em">
+    House
+    <select style="margin-left:1em;" id="houseSelect">
+      <option value="FOH" text="FOH">FOH</option>
+      <option value="FOH" text="FOH">BOH</option>
+      <option value="Both" text="Both">Both</option>
+      <option disabled selected value="selectOption" style="display:none">Select a house</option>
+    </select>
+    <span id="errorSpan" class="error"></span>
+  </div>
+  <div class="footer" style="position:fixed;right:0px;bottom:0px;margin-top:1em;">
+    <button onclick="getFormValues()">Ok</button>
+    <button onclick="google.script.host.close()">Cancel</button>
+  </div>
+</body>
+<script>
+  function getFormValues() {
+    var weekdaySelect = document.getElementById("weekdaySelect");
+    var selectedWeekday = weekdaySelect.options[weekdaySelect.selectedIndex].text;
+
+    var houseSelect = document.getElementById("houseSelect");
+    var selectedHouse = houseSelect.options[houseSelect.selectedIndex].text;
+    var houseSelected = false;
+    var formValues = [];
+    var checkbox, i;
+
+    if (selectedWeekday != "Select a weekday") {
+      if (selectedHouse != "Select a house") {
+        formValues.push(weekdaySelect.selectedIndex);
+        var checkboxes = document.getElementsByTagName("input");
+        for (i = 0; i < checkboxes.length; i++) {
+          checkbox = checkboxes[i];
+          formValues.push(checkbox.checked);
+        }
+        formValues.push(selectedHouse);
+        google.script.run.getAvailableFromDialog(formValues);
+        google.script.host.close();
+      }
+      else {
+        document.getElementById("errorSpan").innerHTML = "<br>You did not select a house.";
+      }
+    }
+    else {
+      if (selectedHouse != "Select a house") {
+        houseSelected = true;
+      }
+      if (!houseSelected) {
+        document.getElementById("errorSpan").innerHTML = "<br>You did not select a weekday and a house.";
+      }
+      else {
+        document.getElementById("errorSpan").innerHTML = "<br>You did not select a weekday.";
+      }
+    }
+  }
+</script>
+
+</html>

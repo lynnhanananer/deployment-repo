@@ -1,0 +1,79 @@
+<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+<!DOCTYPE html>
+<html>
+<body>
+<style>
+div {
+  padding-left: 10px;
+  padding-top: 10px;
+}
+</style>
+<div>
+<b>Select people you would like to keep:</b>
+<form id= "checkBoxes">
+</form>
+<button onClick = "selectAll()">Select All</button>
+<button onClick = "deselectAll()">Deselect All</button>
+<br><br>
+<button onClick = "displayChecked()">Clear Schedule</button>
+</div>
+</body>
+</html>
+<script>
+getNamesList();
+function getNamesList()
+{
+  google.script.run.withSuccessHandler(addNames).getNames();  
+}
+function addNames(names)
+{
+  var myDiv = document.getElementById("checkBoxes");
+
+  for (var i = 0; i < names.length; i++) 
+  {
+  if(names[i])
+  {
+    var checkBox = document.createElement("input");
+    var label = document.createElement("label");
+    checkBox.type = "checkbox";
+    checkBox.value = names[i];
+    checkBox.checked = true;
+    myDiv.appendChild(checkBox);
+    myDiv.appendChild(label);
+    label.appendChild(document.createTextNode(names[i]));
+    myDiv.appendChild(document.createElement("br"));
+    }
+  }
+}
+function displayChecked()
+{
+  var nameBoxes = document.getElementById("checkBoxes").elements;
+  var names = [];
+  var i;
+  var namesCounter = 0;
+  for(i = 0; i < nameBoxes.length; i++)
+  {
+     if(!nameBoxes[i].checked)
+     {
+     names[namesCounter++] = nameBoxes[i].value;
+     }
+  }
+  google.script.run.clearSchedule(names);
+}
+function selectAll()
+{
+  var nameBoxes = document.getElementById("checkBoxes").elements;
+  for(var i = 0; i < nameBoxes.length; i++)
+  {
+  nameBoxes[i].checked = true;
+  }
+}
+function deselectAll()
+{
+  var nameBoxes = document.getElementById("checkBoxes").elements;
+  for(var i = 0; i < nameBoxes.length; i++)
+  {
+  nameBoxes[i].checked = false;
+  }
+}
+</script>
